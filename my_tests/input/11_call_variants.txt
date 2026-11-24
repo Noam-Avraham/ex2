@@ -1,0 +1,17 @@
+void helper()
+{
+    return;
+}
+
+int add(int a, int b)
+{
+    return a + b;
+}
+
+void f(Point p)
+{
+    helper();
+    add(1,2);
+    p.move(1,2);
+    p.reset();
+}

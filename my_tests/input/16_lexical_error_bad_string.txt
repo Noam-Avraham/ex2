@@ -1,0 +1,5 @@
+void f()
+{
+    string s;
+    s := "bad123";
+}
