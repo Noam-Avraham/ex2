@@ -10,6 +10,7 @@ public class AstGeneralExp extends AstExp
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.type = type;
 		this.sizeExp = null;
+		System.out.print("====================== newExp -> NEW type\n");
 	}
 
 	public AstGeneralExp(AstType type, AstExp sizeExp)
@@ -17,6 +18,7 @@ public class AstGeneralExp extends AstExp
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.type = type;
 		this.sizeExp = sizeExp;
+		System.out.print("====================== newExp -> NEW type LBRACK exp RBRACK\n");
 	}
 
 	public void printMe()

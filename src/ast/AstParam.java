@@ -10,6 +10,7 @@ public class AstParam extends AstNode
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.type = type;
 		this.name = name;
+		System.out.print("====================== param -> type ID\n");
 	}
 
 	public void printMe()

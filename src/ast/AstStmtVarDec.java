@@ -8,6 +8,7 @@ public class AstStmtVarDec extends AstStmt
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.dec = dec;
+		System.out.print("====================== stmt -> varDec\n");
 	}
 
 	public void printMe()

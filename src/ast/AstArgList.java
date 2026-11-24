@@ -10,11 +10,13 @@ public class AstArgList extends AstNode
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		args.add(first);
+		System.out.print("====================== argList -> exp\n");
 	}
 
 	public AstArgList addArg(AstExp e)
 	{
 		args.add(e);
+		System.out.print("====================== argList -> argList COMMA exp\n");
 		return this;
 	}
 

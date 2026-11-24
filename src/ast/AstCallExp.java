@@ -12,6 +12,15 @@ public class AstCallExp extends AstExp
 		this.receiver = receiver;
 		this.funcName = funcName;
 		this.args = args;
+
+		if (receiver == null && args == null)
+			System.out.print("====================== callExp -> ID LPAREN RPAREN\n");
+		else if (receiver == null && args != null)
+			System.out.print("====================== callExp -> ID LPAREN argList RPAREN\n");
+		else if (receiver != null && args == null)
+			System.out.print("====================== callExp -> var DOT ID LPAREN RPAREN\n");
+		else
+			System.out.print("====================== callExp -> var DOT ID LPAREN argList RPAREN\n");
 	}
 
 	public void printMe()

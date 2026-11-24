@@ -8,6 +8,11 @@ public class AstStmtReturn extends AstStmt
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.exp = exp;
+
+		if (exp == null)
+			System.out.print("====================== stmt -> RETURN SEMICOLON\n");
+		else
+			System.out.print("====================== stmt -> RETURN exp SEMICOLON\n");
 	}
 
 	public void printMe()

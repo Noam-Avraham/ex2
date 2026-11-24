@@ -14,6 +14,11 @@ public class AstFuncDec extends AstDec
 		this.name = name;
 		this.params = params;
 		this.body = body;
+
+		if (params == null)
+			System.out.print("====================== funcDec -> type ID LPAREN RPAREN LBRACE stmts RBRACE\n");
+		else
+			System.out.print("====================== funcDec -> type ID LPAREN paramList RPAREN LBRACE stmts RBRACE\n");
 	}
 
 	public void printMe()

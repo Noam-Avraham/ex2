@@ -5,6 +5,7 @@ public class AstTypeVoid extends AstType
 	public AstTypeVoid()
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
+		System.out.print("====================== type -> TYPE_VOID\n");
 	}
 
 	public void printMe()

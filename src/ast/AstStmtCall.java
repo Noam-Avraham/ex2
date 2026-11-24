@@ -8,6 +8,7 @@ public class AstStmtCall extends AstStmt
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.call = call;
+		System.out.print("====================== stmt -> callExp SEMICOLON\n");
 	}
 
 	public void printMe()

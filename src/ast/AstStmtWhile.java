@@ -13,6 +13,7 @@ public class AstStmtWhile extends AstStmt
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.cond = cond;
 		this.body = body;
+		System.out.print("====================== stmt -> WHILE LPAREN exp RPAREN LBRACE stmts RBRACE\n");
 	}
 
 	public void printMe()

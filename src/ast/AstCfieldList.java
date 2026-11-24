@@ -10,11 +10,13 @@ public class AstCfieldList extends AstNode
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		fields.add(first);
+		System.out.print("====================== cfieldList -> cField\n");
 	}
 
 	public AstCfieldList addCfield(AstDec d)
 	{
 		fields.add(d);
+		System.out.print("====================== cfieldList -> cfieldList cField\n");
 		return this;
 	}
 

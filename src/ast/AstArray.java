@@ -10,6 +10,7 @@ public class AstArray extends AstDec
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.name = name;
 		this.elementType = elementType;
+		System.out.print("====================== arrayTypedef -> ARRAY ID EQ type LBRACK RBRACK SEMICOLON\n");
 	}
 
 	public void printMe()

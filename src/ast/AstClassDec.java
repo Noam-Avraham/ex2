@@ -12,6 +12,7 @@ public class AstClassDec extends AstDec
 		this.name = name;
 		this.parentName = null;
 		this.fields = fields;
+		System.out.print("====================== classDec -> CLASS ID LBRACE cfieldList RBRACE\n");
 	}
 
 	public AstClassDec(String name, String parentName, AstCfieldList fields)
@@ -20,6 +21,7 @@ public class AstClassDec extends AstDec
 		this.name = name;
 		this.parentName = parentName;
 		this.fields = fields;
+		System.out.print("====================== classDec -> CLASS ID EXTENDS ID LBRACE cfieldList RBRACE\n");
 	}
 
 	public void printMe()

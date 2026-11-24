@@ -12,6 +12,13 @@ public class AstVarDec extends AstDec
 		this.type = type;
 		this.name = name;
 		this.init = init;
+
+		if (init == null)
+			System.out.print("====================== varDec -> type ID SEMICOLON\n");
+		else if (init instanceof AstGeneralExp)
+			System.out.print("====================== varDec -> type ID ASSIGN newExp SEMICOLON\n");
+		else
+			System.out.print("====================== varDec -> type ID ASSIGN exp SEMICOLON\n");
 	}
 
 	public void printMe()

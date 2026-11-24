@@ -10,11 +10,13 @@ public class AstParamList extends AstNode
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		params.add(first);
+		System.out.print("====================== paramList -> param\n");
 	}
 
 	public AstParamList addP(AstParam p)
 	{
 		params.add(p);
+		System.out.print("====================== paramList -> paramList COMMA param\n");
 		return this;
 	}
 

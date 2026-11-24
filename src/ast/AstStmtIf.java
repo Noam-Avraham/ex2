@@ -15,6 +15,11 @@ public class AstStmtIf extends AstStmt
 		this.cond = cond;
 		this.body = body;
 		this.elseBody = elseBody;
+
+		if (elseBody == null)
+			System.out.print("====================== stmt -> IF LPAREN exp RPAREN LBRACE stmts RBRACE\n");
+		else
+			System.out.print("====================== stmt -> IF LPAREN exp RPAREN LBRACE stmts RBRACE ELSE LBRACE stmts RBRACE\n");
 	}
 
 	public void printMe()

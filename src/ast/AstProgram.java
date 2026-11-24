@@ -10,11 +10,13 @@ public class AstProgram extends AstNode
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		decs.add(first);
+		System.out.print("====================== program -> dec\n");
 	}
 
 	public AstProgram addPr(AstDec d)
 	{
 		decs.add(d);
+		System.out.print("====================== program -> program dec\n");
 		return this;
 	}
 

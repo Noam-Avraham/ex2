@@ -8,6 +8,7 @@ public class AstTypeId extends AstType
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.name = name;
+		System.out.format("====================== type -> ID( %s )\n", name);
 	}
 
 	public void printMe()
