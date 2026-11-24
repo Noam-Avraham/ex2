@@ -111,10 +111,8 @@ non terminal AstDec arrayTypedef;
 non terminal AstGeneralExp newExp;     
 non terminal AstCallExp callExp;
 non terminal AstArgList argList;
-non terminal AstStmt matchStmt;
-non terminal AstStmt opStmt;
-non terminal AstStmtList matchStmtL;
-non terminal AstStmtList opStmtL;
+non terminal AstStmt stmt;
+non terminal AstStmtList stmtList;
 
 
 /***********************/
@@ -155,10 +153,8 @@ varDec 		::= 	type:t ID:id SEMICOLON					{: RESULT = new AstVarDec(t, id , null)
             | 		type:t ID:id ASSIGN newExp:ne SEMICOLON	{: RESULT = new AstVarDec(t, id , ne);   :}
 			;
 
-funcDec 	::= 	type:t ID:id LPAREN RPAREN LBRACE matchStmtL:body RBRACE 				{: RESULT = new AstFuncDec(t, id, null, body); :}
-            | 		type:t ID:id LPAREN RPAREN LBRACE opStmtL:body RBRACE 					{: RESULT = new AstFuncDec(t, id, null, body); :}
-            | 		type:t ID:id LPAREN paramList:p RPAREN LBRACE matchStmtL:body RBRACE 	{: RESULT = new AstFuncDec(t, id, p, body);    :}
-            | 		type:t ID:id LPAREN paramList:p RPAREN LBRACE opStmtL:body RBRACE 		{: RESULT = new AstFuncDec(t, id, p, body);    :}
+funcDec 	::= 	type:t ID:id LPAREN RPAREN LBRACE stmtList:body RBRACE 				{: RESULT = new AstFuncDec(t, id, null, body); :}
+            | 		type:t ID:id LPAREN paramList:p RPAREN LBRACE stmtList:body RBRACE 	{: RESULT = new AstFuncDec(t, id, p, body);    :}
             ;
 
 /* invented: expresses funcDec's {COMMA type ID} repetition, not named in Table 2 */
@@ -213,38 +209,19 @@ var			::=		ID:name								{: RESULT = new AstVarSimple(name);       :}
 			| 		var:v LBRACK exp:e RBRACK			{: RESULT = new AstVarSubscript(v,e);     :}
 			;
 					
-/* invented: a stmtList guaranteed to contain no dangling if, so it's always safe right before an ELSE */
-
-matchStmtL	::= 	matchStmt:s                       {: RESULT = new AstStmtList(s,null); :}
-        	| 		matchStmt:s matchStmtL:l          {: RESULT = new AstStmtList(s,l);    :}
-        	| 		opStmt:s matchStmtL:l             {: RESULT = new AstStmtList(s,l);    :}
+stmtList	::= 	stmt:s                       {: RESULT = new AstStmtList(s,null); :}
+        	| 		stmt:s stmtList:l             {: RESULT = new AstStmtList(s,l);    :}
             ;
 
-/* invented: a stmtList whose last stmt may still be a dangling if, lacking its own else */
-
-opStmtL		::= 	opStmt:s                          {: RESULT = new AstStmtList(s,null); :}
-            | 		matchStmt:s opStmtL:l             {: RESULT = new AstStmtList(s,l);    :}
-            | 		opStmt:s opStmtL:l                {: RESULT = new AstStmtList(s,l);    :}
-        	;
-
-/* invented: a stmt that can never end in an unmatched if — split out to resolve the dangling-else ambiguity without a %prec hack */
-
-matchStmt 	::= 	varDec:v                                                                								{: RESULT = new AstStmtVarDec(v);               :}
+stmt 		::= 	varDec:v                                                                								{: RESULT = new AstStmtVarDec(v);               :}
             | 		var:v ASSIGN exp:e SEMICOLON                                             								{: RESULT = new AstStmtAssign(v,e);   			:}
             |		var:v ASSIGN newExp:ne SEMICOLON																		{: RESULT = new AstStmtAssign(v,ne); 			:}
             | 		RETURN SEMICOLON                                                       									{: RESULT = new AstStmtReturn(null); 			:}
             | 		RETURN exp:e SEMICOLON                                                  								{: RESULT = new AstStmtReturn(e);    			:}
             | 		callExp:c SEMICOLON                                                      								{: RESULT = new AstStmtCall(c);      			:}
-            | 		IF LPAREN exp:cond RPAREN LBRACE matchStmtL:body RBRACE ELSE LBRACE matchStmtL:elseBody RBRACE  		{: RESULT = new AstStmtIf(cond, body, elseBody);:}
-            | 		WHILE LPAREN exp:cond RPAREN LBRACE matchStmtL:body RBRACE												{: RESULT = new AstStmtWhile(cond, body); 		:}
-            ;
-
-/* invented: a stmt that may still end in an if with no else — kept separate so an ELSE always binds to the nearest unmatched if */
-
-opStmt 		::= 	IF LPAREN exp:cond RPAREN LBRACE matchStmtL:body RBRACE										{: RESULT = new AstStmtIf(cond, body, null); 	:}
-            | 		IF LPAREN exp:cond RPAREN LBRACE opStmtL:body RBRACE											{: RESULT = new AstStmtIf(cond, body, null); 	:}
-            | 		IF LPAREN exp:cond RPAREN LBRACE matchStmtL:body RBRACE ELSE LBRACE opStmtL:elseBody RBRACE		{: RESULT = new AstStmtIf(cond, body, elseBody);:}
-            | 		WHILE LPAREN exp:cond RPAREN LBRACE opStmtL:body RBRACE											{: RESULT = new AstStmtWhile(cond, body); 		:}
+            | 		IF LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE													{: RESULT = new AstStmtIf(cond, body, null); 	:}
+            | 		IF LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE ELSE LBRACE stmtList:elseBody RBRACE				{: RESULT = new AstStmtIf(cond, body, elseBody);:}
+            | 		WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE												{: RESULT = new AstStmtWhile(cond, body); 		:}
 			;
 
 exp 		::= 	INT:i                        {: RESULT = new AstExpInt(i);        :}
