@@ -1,0 +1,14 @@
+class Point
+{
+    int x;
+}
+
+array IntArray = int[];
+
+void f()
+{
+    Point p;
+    p := new Point;
+    IntArray a;
+    a := new int[10];
+}

@@ -1,0 +1,7 @@
+void f()
+{
+    string s;
+    s := "hello";
+    Point p;
+    p := nil;
+}

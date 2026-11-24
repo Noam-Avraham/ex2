@@ -1,0 +1,7 @@
+void f(int a, int b, int c)
+{
+    int r;
+    r := a + b * c - a / b;
+    r := (a + b) * c;
+    r := a < b and b < c or a = c;
+}

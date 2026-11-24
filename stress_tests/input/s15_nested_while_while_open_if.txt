@@ -1,0 +1,13 @@
+void f(int a, int b, int c, int x)
+{
+    while (a < 1)
+    {
+        while (b < 1)
+        {
+            if (c < 1)
+            {
+                x := 1;
+            }
+        }
+    }
+}

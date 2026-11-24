@@ -1,0 +1,14 @@
+void f(int a, int b, int x)
+{
+    if (a < 1)
+    {
+        if (b < 1)
+        {
+            x := 1;
+        }
+    }
+    else
+    {
+        x := 2;
+    }
+}
