@@ -35,7 +35,6 @@ public class AstGraphviz
 			{
 				String dirname="./output/";
 				String filename="AST_IN_GRAPHVIZ_DOT_FORMAT.txt";
-				new java.io.File(dirname).mkdirs();
 				instance.fileWriter = new PrintWriter(dirname+filename);
 			}
 			catch (Exception e)
