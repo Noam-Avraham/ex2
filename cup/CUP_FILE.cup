@@ -4,9 +4,15 @@
 import java_cup.runtime.*;
 import ast.*;
 
-parser code 
+parser code
 {:
 	public Lexer lexer;
+
+	/********************************************************************/
+	/* line of the FIRST syntax error encountered, -1 if none yet; read */
+	/* by Main to build the ERROR(line) output instead of exiting here  */
+	/********************************************************************/
+	public int errorLine = -1;
 
 	public Parser(Lexer lexer)
 	{
@@ -15,13 +21,7 @@ parser code
 	}
 	public void report_error(String message, Object info)
 	{
-		System.out.print("ERROR >> ");		
-		System.out.print("[");
-		System.out.print(lexer.getLine());
-		System.out.print(":");
-		System.out.print(lexer.getTokenStartPosition());
-		System.out.print("] ");		
-		System.exit(0);
+		if (errorLine == -1) errorLine = lexer.getLine();
 	}
 :}
 
@@ -53,6 +53,8 @@ scan with
 /* TERMINALS */
 /*************/
 terminal IF;
+terminal ELSE;
+terminal RETURN;
 terminal EQ;
 terminal DOT;
 terminal PLUS;
@@ -68,6 +70,21 @@ terminal LBRACE;
 terminal RBRACE;
 terminal SEMICOLON;
 terminal ASSIGN;
+terminal ARRAY;
+terminal CLASS;
+terminal EXTENDS;
+terminal NEW;
+terminal NIL;
+terminal TYPE_INT;
+terminal TYPE_STRING;
+terminal TYPE_VOID;
+terminal LT;
+terminal GT;
+terminal AND;
+terminal OR;
+terminal COMMA;
+terminal String STRING;
+terminal ERROR;
 
 /*************/
 /* TERMINALS */
@@ -80,42 +97,170 @@ terminal String ID;
 /*****************/
 non terminal AstExp exp;
 non terminal AstVar var;
-non terminal AstStmt stmt;
-non terminal AstStmtList stmtList;
+non terminal AstProgram program;
+non terminal AstDec dec;
+non terminal AstType type;
+non terminal AstVarDec varDec;
+non terminal AstFuncDec funcDec;
+non terminal AstParam param;
+non terminal AstParamList paramList;
+non terminal AstClassDec classDec;
+non terminal AstCfieldList cfieldList;
+non terminal AstDec cfield;
+non terminal AstDec arrayTypedef;
+non terminal AstGeneralExp newExp;     
+non terminal AstCallExp callExp;
+non terminal AstArgList argList;
+non terminal AstStmt matchStmt;
+non terminal AstStmt opStmt;
+non terminal AstStmtList matchStmtL;
+non terminal AstStmtList opStmtL;
+
 
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
-precedence left PLUS;
-precedence left MINUS;
-precedence left TIMES;
-precedence left DIVIDE;
+  precedence left OR;
+  precedence left AND;
+  precedence left EQ;
+  precedence left LT, GT;
+  precedence left PLUS, MINUS;
+  precedence left TIMES, DIVIDE;
 
 /************************/
 /* START WITH: stmtList */
 /************************/
-start with stmtList;
+start with program;
 
 /********************/
 /* DERIVATION RULES */
 /********************/
+program     ::=     dec:d                  {: RESULT=new AstProgram(d); :}
+			|       program:p dec:d        {: RESULT= p.addPr(d);     	:}
+			;
+dec 		::= 	varDec:v          		{: RESULT = v; :}
+        	| 		funcDec:f          		{: RESULT = f; :}
+        	| 		classDec:c        		{: RESULT = c; :}
+        	| 		arrayTypedef:a     		{: RESULT = a; :}
+			;
 
-stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AstStmtList(s,l);    :}
-					| stmt:s				{: RESULT = new AstStmtList(s,null); :}
-					;
+type        ::=		TYPE_INT				{: RESULT=new AstTypeInt();    :}
+			|		TYPE_STRING				{: RESULT=new AstTypeString(); :}
+			|		TYPE_VOID				{: RESULT=new AstTypeVoid();   :}
+			|		ID:id					{: RESULT=new AstTypeId(id);   :}
+        	;
+
+varDec 		::= 	type:t ID:id SEMICOLON					{: RESULT = new AstVarDec(t, id , null); :}
+            | 		type:t ID:id ASSIGN exp:e SEMICOLON		{: RESULT = new AstVarDec(t, id , e);    :}
+            | 		type:t ID:id ASSIGN newExp:ne SEMICOLON	{: RESULT = new AstVarDec(t, id , ne);   :}
+			;
+
+funcDec 	::= 	type:t ID:id LPAREN RPAREN LBRACE matchStmtL:body RBRACE 				{: RESULT = new AstFuncDec(t, id, null, body); :}
+            | 		type:t ID:id LPAREN RPAREN LBRACE opStmtL:body RBRACE 					{: RESULT = new AstFuncDec(t, id, null, body); :}
+            | 		type:t ID:id LPAREN paramList:p RPAREN LBRACE matchStmtL:body RBRACE 	{: RESULT = new AstFuncDec(t, id, p, body);    :}
+            | 		type:t ID:id LPAREN paramList:p RPAREN LBRACE opStmtL:body RBRACE 		{: RESULT = new AstFuncDec(t, id, p, body);    :}
+            ;
+
+/* invented: expresses funcDec's {COMMA type ID} repetition, not named in Table 2 */
+
+paramList 	::=  	param:p							{:RESULT=new AstParamList(p);:}
+			|		paramList:pl COMMA param:p		{:RESULT=pl.addP(p);		 :}
+			;
+
+/* invented: a single "type ID" parameter pair, used inside paramList */
+
+param       ::=  	type:t ID:id 					{:RESULT=new AstParam(t,id); :}
+			;
+
+classDec	::=     CLASS	ID:id LBRACE cfieldList:cfl RBRACE            			{: RESULT = new AstClassDec(id,cfl);      :}
+			|		CLASS	ID:id EXTENDS ID:id2 LBRACE cfieldList:cfl RBRACE		{: RESULT = new AstClassDec(id,id2,cfl);  :}
+			;
+
+/* invented: expresses classDec's {cField} repetition, not named in Table 2 */
+
+cfieldList ::=     	cfield:cd     				{: RESULT=new AstCfieldList(cd); 		:}
+			|		cfieldList:cdl cfield:cd	{: RESULT= cdl.addCfield(cd); 	:}
+			;
+
+
+cfield    ::=		varDec:vd          			{: RESULT=vd; :}
+			|		funcDec:fd                  {: RESULT=fd; :}
+			;
+
+arrayTypedef::=		ARRAY ID:id	EQ type:t LBRACK RBRACK SEMICOLON  {:RESULT= new AstArray(id,t); :}
+			;
+
+newExp      ::=     NEW type:t                          {: RESULT = new AstGeneralExp(t);   :}
+			|       NEW type:t  LBRACK exp:e RBRACK     {: RESULT = new AstGeneralExp(t,e); :}
+			;
+
+
+callExp 	::= 	ID:id LPAREN RPAREN							{: RESULT = new AstCallExp(null, id, null); :}
+            | 		ID:id LPAREN argList:al RPAREN  			{: RESULT = new AstCallExp(null, id, al);   :}
+            | 		var:v DOT ID:id LPAREN RPAREN				{: RESULT = new AstCallExp(v, id, null);    :}
+            | 		var:v DOT ID:id LPAREN argList:al RPAREN	{: RESULT = new AstCallExp(v, id, al);      :}
+            ;   
+			
+/* invented: expresses callExp's {COMMA exp} repetition, not named in Table 2 */
+
+argList 	::= 	exp:e                     	{: RESULT = new AstArgList(e); :}
+            | 		argList:al COMMA exp:e      {: RESULT = al.addArg(e);      :}
+            ;
+
 
 var			::=		ID:name								{: RESULT = new AstVarSimple(name);       :}
-					| var:v DOT ID:fieldName			{: RESULT = new AstVarField(v,fieldName); :}
-					| var:v LBRACK exp:e RBRACK			{: RESULT = new AstVarSubscript(v,e);     :}
-					;
+			| 		var:v DOT ID:fieldName				{: RESULT = new AstVarField(v,fieldName); :}
+			| 		var:v LBRACK exp:e RBRACK			{: RESULT = new AstVarSubscript(v,e);     :}
+			;
 					
-stmt		::=		var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AstStmtAssign(v,e); :}
-					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AstStmtIf(   cond,body); :}
-					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AstStmtWhile(cond,body); :}
-					;
+/* invented: a stmtList guaranteed to contain no dangling if, so it's always safe right before an ELSE */
 
-exp			::=		INT:i								{: RESULT = new AstExpInt(i);          :}
-					| var:v								{: RESULT = new AstExpVar(v);          :}
-					| exp:e1 PLUS  exp:e2				{: RESULT = new AstExpBinop(e1, e2, 0);:}
-					| exp:e1 MINUS exp:e2				{: RESULT = new AstExpBinop(e1, e2, 1);:}
-					;
+matchStmtL	::= 	matchStmt:s                       {: RESULT = new AstStmtList(s,null); :}
+        	| 		matchStmt:s matchStmtL:l          {: RESULT = new AstStmtList(s,l);    :}
+        	| 		opStmt:s matchStmtL:l             {: RESULT = new AstStmtList(s,l);    :}
+            ;
+
+/* invented: a stmtList whose last stmt may still be a dangling if, lacking its own else */
+
+opStmtL		::= 	opStmt:s                          {: RESULT = new AstStmtList(s,null); :}
+            | 		matchStmt:s opStmtL:l             {: RESULT = new AstStmtList(s,l);    :}
+            | 		opStmt:s opStmtL:l                {: RESULT = new AstStmtList(s,l);    :}
+        	;
+
+/* invented: a stmt that can never end in an unmatched if — split out to resolve the dangling-else ambiguity without a %prec hack */
+
+matchStmt 	::= 	varDec:v                                                                								{: RESULT = new AstStmtVarDec(v);               :}
+            | 		var:v ASSIGN exp:e SEMICOLON                                             								{: RESULT = new AstStmtAssign(v,e);   			:}
+            |		var:v ASSIGN newExp:ne SEMICOLON																		{: RESULT = new AstStmtAssign(v,ne); 			:}
+            | 		RETURN SEMICOLON                                                       									{: RESULT = new AstStmtReturn(null); 			:}
+            | 		RETURN exp:e SEMICOLON                                                  								{: RESULT = new AstStmtReturn(e);    			:}
+            | 		callExp:c SEMICOLON                                                      								{: RESULT = new AstStmtCall(c);      			:}
+            | 		IF LPAREN exp:cond RPAREN LBRACE matchStmtL:body RBRACE ELSE LBRACE matchStmtL:elseBody RBRACE  		{: RESULT = new AstStmtIf(cond, body, elseBody);:}
+            | 		WHILE LPAREN exp:cond RPAREN LBRACE matchStmtL:body RBRACE												{: RESULT = new AstStmtWhile(cond, body); 		:}
+            ;
+
+/* invented: a stmt that may still end in an if with no else — kept separate so an ELSE always binds to the nearest unmatched if */
+
+opStmt 		::= 	IF LPAREN exp:cond RPAREN LBRACE matchStmtL:body RBRACE										{: RESULT = new AstStmtIf(cond, body, null); 	:}
+            | 		IF LPAREN exp:cond RPAREN LBRACE opStmtL:body RBRACE											{: RESULT = new AstStmtIf(cond, body, null); 	:}
+            | 		IF LPAREN exp:cond RPAREN LBRACE matchStmtL:body RBRACE ELSE LBRACE opStmtL:elseBody RBRACE		{: RESULT = new AstStmtIf(cond, body, elseBody);:}
+            | 		WHILE LPAREN exp:cond RPAREN LBRACE opStmtL:body RBRACE											{: RESULT = new AstStmtWhile(cond, body); 		:}
+			;
+
+exp 		::= 	INT:i                        {: RESULT = new AstExpInt(i);        :}
+			|		var:v                        {: RESULT = new AstExpVar(v);        :}
+        	| 		exp:e1 PLUS   exp:e2         {: RESULT = new AstExpBinop(e1,e2,0);:}
+        	| 		exp:e1 MINUS  exp:e2         {: RESULT = new AstExpBinop(e1,e2,1);:}
+			| 		LPAREN exp:e RPAREN          {: RESULT = e;                       :}
+        	| 		exp:e1 TIMES  exp:e2         {: RESULT = new AstExpBinop(e1,e2,2);:}
+        	| 		exp:e1 DIVIDE exp:e2         {: RESULT = new AstExpBinop(e1,e2,3);:}
+        	| 		exp:e1 LT     exp:e2         {: RESULT = new AstExpBinop(e1,e2,4);:}
+        	| 		exp:e1 GT     exp:e2         {: RESULT = new AstExpBinop(e1,e2,5);:}
+        	| 		exp:e1 EQ     exp:e2         {: RESULT = new AstExpBinop(e1,e2,6);:}
+        	| 		exp:e1 AND    exp:e2         {: RESULT = new AstExpBinop(e1,e2,7);:}
+        	| 		exp:e1 OR     exp:e2         {: RESULT = new AstExpBinop(e1,e2,8);:}
+        	| 		callExp:c                    {: RESULT = c;                       :}
+        	| 		MINUS INT:i                  {: RESULT = new AstExpInt(-i);       :}
+        	| 		NIL                          {: RESULT = new AstExpNil();         :}
+        	| 		STRING:s                     {: RESULT = new AstExpString(s);     :}
+        	;
