@@ -6,9 +6,10 @@ public class AstProgram extends AstNode
 {
 	public List<AstDec> decs = new ArrayList<AstDec>();
 
-	public AstProgram(AstDec first)
+	public AstProgram(AstDec first, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
+		this.line = line;
 		decs.add(first);
 		System.out.print("====================== program -> dec\n");
 	}

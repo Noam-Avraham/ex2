@@ -5,19 +5,21 @@ public class AstGeneralExp extends AstExp
 	public AstType type;
 	public AstExp sizeExp;   // null = "new type" (object), not-null = "new type[size]" (array)
 
-	public AstGeneralExp(AstType type)
+	public AstGeneralExp(AstType type, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.type = type;
 		this.sizeExp = null;
+		this.line = line;
 		System.out.print("====================== newExp -> NEW type\n");
 	}
 
-	public AstGeneralExp(AstType type, AstExp sizeExp)
+	public AstGeneralExp(AstType type, AstExp sizeExp, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.type = type;
 		this.sizeExp = sizeExp;
+		this.line = line;
 		System.out.print("====================== newExp -> NEW type LBRACK exp RBRACK\n");
 	}
 

@@ -7,7 +7,7 @@ public class AstExpVar extends AstExp
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AstExpVar(AstVar var)
+	public AstExpVar(AstVar var, int line)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -23,6 +23,7 @@ public class AstExpVar extends AstExp
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.var = var;
+		this.line = line;
 	}
 	
 	/***********************************************/

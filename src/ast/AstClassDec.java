@@ -6,21 +6,23 @@ public class AstClassDec extends AstDec
 	public String parentName;   // nullable — null means no EXTENDS
 	public AstCfieldList fields;
 
-	public AstClassDec(String name, AstCfieldList fields)
+	public AstClassDec(String name, AstCfieldList fields, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.name = name;
 		this.parentName = null;
 		this.fields = fields;
+		this.line = line;
 		System.out.print("====================== classDec -> CLASS ID LBRACE cfieldList RBRACE\n");
 	}
 
-	public AstClassDec(String name, String parentName, AstCfieldList fields)
+	public AstClassDec(String name, String parentName, AstCfieldList fields, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.name = name;
 		this.parentName = parentName;
 		this.fields = fields;
+		this.line = line;
 		System.out.print("====================== classDec -> CLASS ID EXTENDS ID LBRACE cfieldList RBRACE\n");
 	}
 

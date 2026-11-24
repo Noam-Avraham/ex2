@@ -6,9 +6,10 @@ public class AstParamList extends AstNode
 {
 	public List<AstParam> params = new ArrayList<AstParam>();
 
-	public AstParamList(AstParam first)
+	public AstParamList(AstParam first, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
+		this.line = line;
 		params.add(first);
 		System.out.print("====================== paramList -> param\n");
 	}

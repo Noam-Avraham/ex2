@@ -9,6 +9,12 @@ public abstract class AstNode
 	/*******************************************/
 	public int serialNumber;
 
+	/*******************************************************/
+	/* Source line where this construct's derivation rule   */
+	/* was reduced, for semantic-error reporting in ex3.    */
+	/*******************************************************/
+	public int line;
+
 	/***********************************************/
 	/* The default message for an unknown AST node */
 	/***********************************************/

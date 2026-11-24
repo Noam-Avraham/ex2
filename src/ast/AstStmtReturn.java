@@ -4,10 +4,11 @@ public class AstStmtReturn extends AstStmt
 {
 	public AstExp exp;   // nullable — null means bare "return;"
 
-	public AstStmtReturn(AstExp exp)
+	public AstStmtReturn(AstExp exp, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.exp = exp;
+		this.line = line;
 
 		if (exp == null)
 			System.out.print("====================== stmt -> RETURN SEMICOLON\n");

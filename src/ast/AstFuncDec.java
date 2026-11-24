@@ -7,13 +7,14 @@ public class AstFuncDec extends AstDec
 	public AstParamList params;   // nullable — null means zero parameters
 	public AstStmtList body;
 
-	public AstFuncDec(AstType returnType, String name, AstParamList params, AstStmtList body)
+	public AstFuncDec(AstType returnType, String name, AstParamList params, AstStmtList body, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.returnType = returnType;
 		this.name = name;
 		this.params = params;
 		this.body = body;
+		this.line = line;
 
 		if (params == null)
 			System.out.print("====================== funcDec -> type ID LPAREN RPAREN LBRACE stmts RBRACE\n");

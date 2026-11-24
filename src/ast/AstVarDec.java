@@ -6,12 +6,13 @@ public class AstVarDec extends AstDec
 	public String name;
 	public AstExp init;   // nullable — no initializer, exp initializer, or newExp initializer
 
-	public AstVarDec(AstType type, String name, AstExp init)
+	public AstVarDec(AstType type, String name, AstExp init, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.type = type;
 		this.name = name;
 		this.init = init;
+		this.line = line;
 
 		if (init == null)
 			System.out.print("====================== varDec -> type ID SEMICOLON\n");

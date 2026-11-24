@@ -9,12 +9,13 @@ public class AstStmtIf extends AstStmt
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AstStmtIf(AstExp cond, AstStmtList body, AstStmtList elseBody)
+	public AstStmtIf(AstExp cond, AstStmtList body, AstStmtList elseBody, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.cond = cond;
 		this.body = body;
 		this.elseBody = elseBody;
+		this.line = line;
 
 		if (elseBody == null)
 			System.out.print("====================== stmt -> IF LPAREN exp RPAREN LBRACE stmts RBRACE\n");

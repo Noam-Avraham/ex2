@@ -6,9 +6,10 @@ public class AstArgList extends AstNode
 {
 	public List<AstExp> args = new ArrayList<AstExp>();
 
-	public AstArgList(AstExp first)
+	public AstArgList(AstExp first, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
+		this.line = line;
 		args.add(first);
 		System.out.print("====================== argList -> exp\n");
 	}

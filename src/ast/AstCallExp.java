@@ -6,12 +6,13 @@ public class AstCallExp extends AstExp
 	public String funcName;
 	public AstArgList args;   // nullable — null means zero arguments
 
-	public AstCallExp(AstVar receiver, String funcName, AstArgList args)
+	public AstCallExp(AstVar receiver, String funcName, AstArgList args, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.receiver = receiver;
 		this.funcName = funcName;
 		this.args = args;
+		this.line = line;
 
 		if (receiver == null && args == null)
 			System.out.print("====================== callExp -> ID LPAREN RPAREN\n");

@@ -4,10 +4,11 @@ public class AstStmtCall extends AstStmt
 {
 	public AstCallExp call;
 
-	public AstStmtCall(AstCallExp call)
+	public AstStmtCall(AstCallExp call, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.call = call;
+		this.line = line;
 		System.out.print("====================== stmt -> callExp SEMICOLON\n");
 	}
 

@@ -9,7 +9,7 @@ public class AstExpBinop extends AstExp
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AstExpBinop(AstExp left, AstExp right, int op)
+	public AstExpBinop(AstExp left, AstExp right, int op, int line)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -27,6 +27,7 @@ public class AstExpBinop extends AstExp
 		this.left = left;
 		this.right = right;
 		this.op = op;
+		this.line = line;
 	}
 	
 	/*************************************************/

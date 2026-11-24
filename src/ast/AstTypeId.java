@@ -4,10 +4,11 @@ public class AstTypeId extends AstType
 {
 	public String name;
 
-	public AstTypeId(String name)
+	public AstTypeId(String name, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.name = name;
+		this.line = line;
 		System.out.format("====================== type -> ID( %s )\n", name);
 	}
 

@@ -5,11 +5,12 @@ public class AstArray extends AstDec
 	public String name;
 	public AstType elementType;
 
-	public AstArray(String name, AstType elementType)
+	public AstArray(String name, AstType elementType, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.name = name;
 		this.elementType = elementType;
+		this.line = line;
 		System.out.print("====================== arrayTypedef -> ARRAY ID EQ type LBRACK RBRACK SEMICOLON\n");
 	}
 

@@ -8,11 +8,12 @@ public class AstStmtWhile extends AstStmt
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AstStmtWhile(AstExp cond, AstStmtList body)
+	public AstStmtWhile(AstExp cond, AstStmtList body, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.cond = cond;
 		this.body = body;
+		this.line = line;
 		System.out.print("====================== stmt -> WHILE LPAREN exp RPAREN LBRACE stmts RBRACE\n");
 	}
 

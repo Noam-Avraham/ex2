@@ -4,10 +4,11 @@ public class AstStmtVarDec extends AstStmt
 {
 	public AstVarDec dec;
 
-	public AstStmtVarDec(AstVarDec dec)
+	public AstStmtVarDec(AstVarDec dec, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.dec = dec;
+		this.line = line;
 		System.out.print("====================== stmt -> varDec\n");
 	}
 

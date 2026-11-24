@@ -5,11 +5,12 @@ public class AstParam extends AstNode
 	public AstType type;
 	public String name;
 
-	public AstParam(AstType type, String name)
+	public AstParam(AstType type, String name, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
 		this.type = type;
 		this.name = name;
+		this.line = line;
 		System.out.print("====================== param -> type ID\n");
 	}
 

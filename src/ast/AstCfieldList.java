@@ -6,9 +6,10 @@ public class AstCfieldList extends AstNode
 {
 	public List<AstDec> fields = new ArrayList<AstDec>();
 
-	public AstCfieldList(AstDec first)
+	public AstCfieldList(AstDec first, int line)
 	{
 		serialNumber = AstNodeSerialNumber.getFresh();
+		this.line = line;
 		fields.add(first);
 		System.out.print("====================== cfieldList -> cField\n");
 	}
